@@ -22,10 +22,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $credentials = app(CredentialStore::class);
 
-        OpenApiCli::register(specPath: 'https://mailcoach.app/downloads/mailcoach-api.yaml')
+        OpenApiCli::register(specPath: 'https://www.mailcoach.app/api-spec/openapi.yaml')
             ->useOperationIds()
             ->cache(ttl: 60 * 60 * 24)
-            ->baseUrl($credentials->getBaseUrl() ?? 'https://your-domain.mailcoach.app')
+            ->baseUrl(($credentials->getBaseUrl() ?? 'https://your-domain.mailcoach.app').'/api')
             ->auth(fn () => $credentials->getToken())
             ->banner(fn (Command $command) => $this->renderBanner())
             ->onError(function (Response $response, Command $command) {

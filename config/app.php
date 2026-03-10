@@ -6,5 +6,6 @@ return [
     'env' => 'production',
     'providers' => [
         App\Providers\AppServiceProvider::class,
+        Spatie\OpenApiCli\OpenApiCliServiceProvider::class,
     ],
 ];
