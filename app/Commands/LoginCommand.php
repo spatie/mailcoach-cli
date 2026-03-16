@@ -3,6 +3,7 @@
 namespace App\Commands;
 
 use App\Concerns\RendersBanner;
+use App\Services\BrowserOpener;
 use App\Services\CredentialStore;
 use Illuminate\Support\Facades\Http;
 use LaravelZero\Framework\Commands\Command;
@@ -15,22 +16,52 @@ class LoginCommand extends Command
 
     protected $description = 'Authenticate with your Mailcoach instance';
 
-    public function handle(CredentialStore $credentials): int
+    public function handle(CredentialStore $credentials, BrowserOpener $browser): int
     {
         $this->renderBanner();
 
-        $baseUrl = $this->ask('What is the URL of your Mailcoach instance?');
+        $selfHosted = $this->confirm('Are you selfhosting Mailcoach?', false);
 
-        if (! $baseUrl) {
-            $this->error('A Mailcoach instance URL is required.');
+        if (! $selfHosted) {
+            $teamName = $this->ask('What is your team name?');
 
-            return self::FAILURE;
+            if (! $teamName) {
+                $this->error('A team name is required.');
+
+                return self::FAILURE;
+            }
+
+            $baseUrl = 'https://'.strtolower($teamName).'.mailcoach.app';
+        } else {
+            $baseUrl = $this->ask('What is the URL of your Mailcoach instance?');
+
+            if (! $baseUrl) {
+                $this->error('A Mailcoach instance URL is required.');
+
+                return self::FAILURE;
+            }
+
+            $baseUrl = rtrim($baseUrl, '/');
+
+            if (! str_starts_with($baseUrl, 'http://') && ! str_starts_with($baseUrl, 'https://')) {
+                $baseUrl = "https://{$baseUrl}";
+            }
         }
 
-        $baseUrl = rtrim($baseUrl, '/');
+        $tokenUrl = "{$baseUrl}/settings/tokens";
 
         $this->line('');
-        $this->info("Create an API token at: {$baseUrl}/account/api-tokens");
+
+        if ($this->confirm("Open browser to create an API token at {$tokenUrl}?")) {
+            if ($browser->open($tokenUrl)) {
+                $this->info('Browser opened. Create a token and paste it below.');
+            } else {
+                $this->warn("Could not open the browser. Please visit: {$tokenUrl}");
+            }
+        } else {
+            $this->info("Create an API token at: {$tokenUrl}");
+        }
+
         $this->line('');
 
         $token = $this->secret('Paste your API token');
