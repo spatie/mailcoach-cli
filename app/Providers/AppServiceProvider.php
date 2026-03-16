@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Concerns\RendersBanner;
 use App\Services\CredentialStore;
+use App\Services\MailcoachDescriber;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\ServiceProvider;
+use NunoMaduro\LaravelConsoleSummary\Contracts\DescriberContract;
 use Spatie\OpenApiCli\Facades\OpenApiCli;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->app->singleton(DescriberContract::class, MailcoachDescriber::class);
+
         $credentials = app(CredentialStore::class);
 
         OpenApiCli::register(specPath: 'https://www.mailcoach.app/api-spec/openapi.yaml')

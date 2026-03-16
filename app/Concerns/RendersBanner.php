@@ -2,25 +2,34 @@
 
 namespace App\Concerns;
 
-use function Termwind\render;
-
 trait RendersBanner
 {
     public function renderBanner(): void
     {
         $version = config('app.version');
 
-        render(<<<HTML
-            <div class="mx-2 my-1">
-                <div class="text-cyan-500">
-                    ╔╦╗╔═╗╦╦  ╔═╗╔═╗╔═╗╔═╗╦ ╦<br/>
-                    ║║║╠═╣║║  ║  ║ ║╠═╣║  ╠═╣<br/>
-                    ╩ ╩╩ ╩╩╩═╝╚═╝╚═╝╩ ╩╚═╝╩ ╩<br/>
-                </div>
-                <div class="text-gray mt-1">
-                    Mailcoach CLI v{$version}
-                </div>
-            </div>
-        HTML);
+        $lines = [
+            ' ███╗   ███╗  █████╗  ██╗ ██╗       ██████╗  ██████╗   █████╗   ██████╗ ██╗  ██╗',
+            ' ████╗ ████║ ██╔══██╗ ██║ ██║      ██╔════╝ ██╔═══██╗ ██╔══██╗ ██╔════╝ ██║  ██║',
+            ' ██╔████╔██║ ███████║ ██║ ██║      ██║      ██║   ██║ ███████║ ██║      ███████║',
+            ' ██║╚██╔╝██║ ██╔══██║ ██║ ██║      ██║      ██║   ██║ ██╔══██║ ██║      ██╔══██║',
+            ' ██║ ╚═╝ ██║ ██║  ██║ ██║ ███████╗ ╚██████╗ ╚██████╔╝ ██║  ██║ ╚██████╗ ██║  ██║',
+            ' ╚═╝     ╚═╝ ╚═╝  ╚═╝ ╚═╝ ╚══════╝  ╚═════╝  ╚═════╝  ╚═╝  ╚═╝  ╚═════╝ ╚═╝  ╚═╝',
+        ];
+
+        $gradient = [45, 39, 33, 69, 63, 57];
+
+        echo PHP_EOL;
+
+        foreach ($lines as $i => $line) {
+            echo "\e[38;5;{$gradient[$i]}m{$line}\e[0m" . PHP_EOL;
+        }
+
+        echo PHP_EOL;
+
+        $tagline = ' ✦ Self-hosted email marketing :: mailcoach.app ✦ ';
+        echo "\e[48;5;{$gradient[0]}m\e[30m\e[1m{$tagline}\e[0m  \e[38;5;245mv{$version}\e[0m" . PHP_EOL;
+
+        echo PHP_EOL;
     }
 }
