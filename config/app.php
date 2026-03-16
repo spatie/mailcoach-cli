@@ -1,11 +1,14 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use Spatie\OpenApiCli\OpenApiCliServiceProvider;
+
 return [
     'name' => 'Mailcoach',
     'version' => '1.0.0',
     'env' => 'production',
     'providers' => [
-        App\Providers\AppServiceProvider::class,
-        Spatie\OpenApiCli\OpenApiCliServiceProvider::class,
+        AppServiceProvider::class,
+        OpenApiCliServiceProvider::class,
     ],
 ];
