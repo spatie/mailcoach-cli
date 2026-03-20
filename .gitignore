@@ -1,5 +1,6 @@
 /vendor
-/builds
+/builds/*
+!/builds/mailcoach
 /.idea
 /.vscode
 /.phpunit.cache
