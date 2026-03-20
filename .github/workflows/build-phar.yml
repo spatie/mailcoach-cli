@@ -1,0 +1,39 @@
+name: Build PHAR
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'CHANGELOG.md'
+      - 'builds/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: zlib
+          ini-values: phar.readonly=0
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Build PHAR
+        run: php vendor/laravel-zero/framework/bin/box compile
+
+      - name: Commit PHAR
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Build PHAR
+          file_pattern: builds/mailcoach
