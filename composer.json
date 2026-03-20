@@ -30,7 +30,8 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Spatie\\MailcoachCli\\": "src/"
         }
     },
     "autoload-dev": {
@@ -44,6 +45,13 @@
         "optimize-autoloader": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Spatie\\MailcoachCli\\MailcoachSkillsServiceProvider"
+            ]
         }
     },
     "minimum-stability": "stable",

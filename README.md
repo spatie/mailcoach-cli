@@ -42,6 +42,35 @@ mailcoach logout       # Remove stored credentials
 mailcoach clear-cache  # Clear the cached API spec (refreshes every 24h)
 ```
 
+## AI Agent Skill
+
+This CLI ships with an [agent skill](https://skills.sh) so AI agents can manage your Mailcoach instance on your behalf.
+
+### Install via Laravel Boost
+
+In a Laravel project using [Boost](https://laravel.com/docs/13.x/boost):
+
+```bash
+composer require spatie/mailcoach-cli --dev
+php artisan boost:install
+```
+
+### Install via skills.sh
+
+Works with Claude Code, Cursor, GitHub Copilot, and [40+ other agents](https://skills.sh):
+
+```bash
+npx skills add spatie/mailcoach-cli
+```
+
+### Manual installation
+
+Copy the `resources/boost/skills/mailcoach/` directory into your agent's skill directory:
+
+- **Claude Code**: `.claude/skills/mailcoach/`
+- **Cursor**: `.cursor/skills/mailcoach/`
+- **Generic**: `.ai/skills/mailcoach/`
+
 ## Credentials
 
 Your API token and instance URL are stored in `~/.mailcoach/config.json`. Running `mailcoach logout` removes this file.
