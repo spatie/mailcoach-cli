@@ -11,10 +11,10 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        php: [8.4, 8.5]
+        php: [8.4, 8.5, 8.6]
         stability: [prefer-stable]
 
     name: P${{ matrix.php }} - ${{ matrix.stability }} - ${{ matrix.os }}
@@ -30,8 +30,45 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: none
 
+      - name: Show runtime
+        run: php --version
+
       - name: Install dependencies
         run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Run tests
-        run: vendor/bin/pest --ci
+        run: vendor/bin/pest --ci --display-deprecations
+
+      - name: Smoke test source CLI
+        run: php mailcoach --version
+
+      - name: Smoke test distributed PHAR
+        run: php builds/mailcoach --version
+
+  build-phar:
+    runs-on: ubuntu-latest
+    name: Build PHAR
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: zlib
+          ini-values: phar.readonly=0
+          coverage: none
+
+      - name: Install locked dependencies
+        run: composer install --prefer-dist --no-interaction
+
+      - name: Check code style
+        run: vendor/bin/pint --test
+
+      - name: Build PHAR
+        run: php vendor/laravel-zero/framework/bin/box compile
+
+      - name: Smoke test rebuilt PHAR
+        run: php builds/mailcoach --version

@@ -4,7 +4,7 @@ CLI tool for interacting with the Mailcoach API, built with Laravel Zero.
 
 ## Architecture
 
-- **Framework**: Laravel Zero 12 (PHP 8.4+)
+- **Framework**: Laravel Zero 13 (PHP 8.4+)
 - **Command generation**: `spatie/laravel-openapi-cli` reads the OpenAPI spec and auto-registers commands
 - **OpenAPI spec**: Fetched from `https://mailcoach.app/downloads/mailcoach-api.yaml`, cached 24h
 - **Credentials**: Stored in `~/.mailcoach/config.json` (token + base URL)
